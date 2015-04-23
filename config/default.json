@@ -1,0 +1,21 @@
+{
+
+    "app" : {
+        "google" : {
+
+            "baseUrl" : "https://www.google.com/search?q="
+        },
+
+        "promptSchema" : {
+            "properties": {
+                "query": {
+                    "required": true
+                }
+            }
+        }
+    },
+
+    "peter" : {
+        
+    }
+}
