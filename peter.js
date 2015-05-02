@@ -1,4 +1,6 @@
 var xray = require('x-ray');
+var request = require('request');
+var cheerio = require('cheerio');
 var debug = require('debug')('peter');
 var config;
 
@@ -63,47 +65,61 @@ peter.prototype = {
         var self = this;
         debug("Crawling %s", url);
 
-        xray(url)
-            .select('body')
+        request(url, function (error, response, body) {
 
-            .run(function (error, result) {
-
-                if (error) {
-                    debug("Couldn't get page because of error: %s", error);
-                    self.resultsDownloaded++;
-                    return;
-                }
-
-                if(typeof result == 'undefined') {
-                    debug("Empty result");
-                    self.resultsDownloaded++;
-                    return;
-                }
-
-                // throw away extra whitespace and non-alphanumeric characters
-                var text = result.replace(/\s+/g, " ")
-                           .replace(/[^a-zA-Z-_ ]/g, "")
-                           .toLowerCase();
-                
-                // split on spaces for a list of all the words on that page and 
-                // loop through that list
-                text.split(" ").forEach(function (word) {
-                    // we don't want to include very short or long words, as they're 
-                    // probably bad data
-                    if (word.length < 4 || word.length > 20) { 
-                        return;
-                    }
-                    
-                    if (self.wordList[word]) {
-                        self.wordList[word]++;
-                    } else {
-                        self.wordList[word] = 1;
-                    }
-                });
-                
+            if (error) {
+                debug("Couldn't get page because of error: %s", error);
                 self.resultsDownloaded++;
-                self.checkResults();
+                return;
+            }
+
+            if(typeof response == 'undefined' || typeof body == 'undefined') {
+                debug("Empty result");
+                self.resultsDownloaded++;
+                return;
+            }
+
+            if(response.statusCode != 200) {
+                debug("Incorrect response code: %s", response.statusCode);
+                self.resultsDownloaded++;
+                return;
+            }
+
+            var $ = cheerio.load(body);
+
+            var htmlBody = $('body').children().filter(function(n, el){ 
+                    if(!$(el).is('script')){
+                        return el;
+                    }
             });
+
+            var htmlBodyPlain = htmlBody.text();
+
+            // throw away extra whitespace and non-alphanumeric characters
+            var text = htmlBodyPlain.replace(/\s+/g, " ")
+                       .replace(/[^a-zA-Z-_ ]/g, "")
+                       .toLowerCase();
+            
+            // split on spaces for a list of all the words on that page and 
+            // loop through that list
+            text.split(" ").forEach(function (word) {
+                // we don't want to include very short or long words, as they're 
+                // probably bad data
+                if (word.length < 4 || word.length > 20) { 
+                    return;
+                }
+                
+                if (self.wordList[word]) {
+                    self.wordList[word]++;
+                } else {
+                    self.wordList[word] = 1;
+                }
+            });
+
+            self.resultsDownloaded++;
+            self.checkResults();
+        });
+
     },
 
     checkResults : function() {
