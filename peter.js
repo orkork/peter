@@ -100,13 +100,26 @@ peter.prototype = {
                        .replace(/[^a-zA-Z-_ ]/g, "")
                        .toLowerCase();
             
-            // split on spaces for a list of all the words on that page and 
-            // loop through that list
-            text.split(" ").forEach(function (word) {
-                // we don't want to include very short or long words, as they're 
-                // probably bad data
-                if (word.length < 4 || word.length > 20) { 
-                    return;
+            // split on spaces for a list of all the words on that page 
+            var words = text.split(" ");
+            
+            
+            words.forEach(function (word) {
+
+                /*
+                 * Filters
+                 */
+                
+                if(self.config.filters) {
+                    var filter;
+                    for(var i in self.config.filters) {
+                        
+                        filter = require('./filters/' + self.config.filters[i]);
+                        
+                        if(!filter.validWord(word)) {
+                            return;
+                        }
+                    }
                 }
                 
                 if (self.wordList[word]) {

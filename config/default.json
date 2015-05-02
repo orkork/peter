@@ -2,7 +2,6 @@
 
     "app" : {
         "google" : {
-
             "baseUrl" : "https://www.google.com/search?q="
         },
 
@@ -16,6 +15,8 @@
     },
 
     "peter" : {
-        
+        "filters"  : [
+            "wordLength"
+        ]
     }
 }
