@@ -16,7 +16,10 @@
 
     "peter" : {
         "filters"  : [
-            "wordLength"
+            "wordLength",
+            "stopwordsEN_mysql",
+            "stopwordsDE",
+            "skipMarkup"
         ]
     }
 }

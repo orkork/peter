@@ -1,5 +1,5 @@
 /**
- * Checks if given given word has a length between 5-19 characters
+ * Checks if given given word has a length between 4-20 characters
  * 
  * @param  {string} word 
  * @return {bool}   Returns true if the word is valid/unfiltered

@@ -1,6 +1,6 @@
 {
   "name": "peter",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "peter is a keyword research tool",
   "main": "index.js",
   "scripts": {
