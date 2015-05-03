@@ -12,9 +12,11 @@ exports.list = [
     "cdata",
     "undefined",
     "afocus",
+    "ahover",
     "border-color",
     "float",
-    "rgba"
+    "rgba",
+    "ease-in-out"
 ];
 
 function validWord(word) {

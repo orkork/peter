@@ -42,17 +42,26 @@ peter.prototype = {
 
                 for(i in results) {
 
-                    // strip out unnecessary junk
+                    // Extract real target url
                     var url = results[i].link.replace("/url?q=", "").split("&")[0];
                     
-                    if (url.charAt(0) === "/") {
-                        continue;
+                    /*
+                     * Url filters
+                     */
+                    
+                    if(self.config.filters && self.config.filters.url) {
+                        
+                        var filter;
+                        for(var i in self.config.filters.url) {
+                            
+                            filter = require('./filters/url/' + self.config.filters.url[i]);
+                            
+                            if(!filter.validUrl(url)) {
+                                continue;
+                            }
+                        }
                     }
                     
-                    if(url.search('.youtube.') > -1) {
-                        continue;
-                    }
-
                     self.totalResults++;
 
                     self.crawl(url);
@@ -107,14 +116,14 @@ peter.prototype = {
             words.forEach(function (word) {
 
                 /*
-                 * Filters
+                 * Word filters
                  */
                 
-                if(self.config.filters) {
+                if(self.config.filters && self.config.filters.word) {
                     var filter;
-                    for(var i in self.config.filters) {
+                    for(var i in self.config.filters.word) {
                         
-                        filter = require('./filters/' + self.config.filters[i]);
+                        filter = require('./filters/word/' + self.config.filters.word[i]);
                         
                         if(!filter.validWord(word)) {
                             return;

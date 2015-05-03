@@ -15,11 +15,17 @@
     },
 
     "peter" : {
-        "filters"  : [
-            "wordLength",
-            "stopwordsEN_mysql",
-            "stopwordsDE",
-            "skipMarkup"
-        ]
+        "filters"  : {
+            "url": [
+                "youtube",
+                "relative"
+            ],
+            "word": [
+                "length",
+                "stopwordsEN_mysql",
+                "stopwordsDE",
+                "skipMarkup"
+            ]
+        }
     }
 }
